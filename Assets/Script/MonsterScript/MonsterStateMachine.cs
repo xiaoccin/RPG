@@ -7,7 +7,14 @@ public class MonsterStateMachine
 {
     public MonsterState currectState { private set; get; }
 
-    public void  MeshChangeState(MonsterState state)
+    public void Initialize(MonsterState state)
+    {
+        currectState = state;
+        currectState.Enter();
+    }
+
+
+    public void  ChangeState(MonsterState state)
     {
         currectState.Exit();
         currectState = state;

@@ -2,28 +2,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Monster : MonoBehaviour
+public class Monster : Entity
 {
-    public Rigidbody2D rb { private set; get; }
-    public Animator animator { private set; get; }
-    
-    public Mo
+    public MonsterStateMachine stateMachine { get; private set; }
+    [SerializeField] protected LayerMask whatIsPlayer;
+    [SerializeField] protected float playerCheckDistance;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+        stateMachine = new MonsterStateMachine();
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+    }
+
+    protected override void Update()
+    {
+        base.Update();
         
     }
 
+    public virtual RaycastHit2D IsPlayerDetected() => Physics2D.Raycast(wallCheck.position, Vector2.right * facingDir, playerCheckDistance, whatIsPlayer);
 
-    // Start is called before the first frame update
-    void Start()
+    protected override void  OnDrawGizmos()
     {
-        rb = GetComponent<Rigidbody2D>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        base.OnDrawGizmos();
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(wallCheck.position, new Vector3(wallCheck.position.x+  playerCheckDistance* facingDir, wallCheck.position.y));
     }
 }

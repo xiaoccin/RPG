@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : Entity
 {
     public bool isBusy { get; private set; } = false;//玩家此时动作繁忙不能切换其他动作(实现僵直)
 
@@ -18,21 +18,10 @@ public class Player : MonoBehaviour
     public float dashDuration;
     public float dashDir {  get; private set; }
 
-    [Header("Collision info")]
-    [SerializeField] private Transform groundCheck;
-    [SerializeField] private float groundCheckDistance;
-    [SerializeField] private Transform wallCheck;
-    [SerializeField] private float wallCheckDistance;
-    [SerializeField] private LayerMask whatIsGround;
 
-    public int facingDir { get; private set; } = 1;
-    private bool facingRight = true;
+    
 
-    #region Components
-    public Animator anim {  get; private set; }
-    public Rigidbody2D rb { get; private set; }
 
-    #endregion
 
     #region State
     public PlayerStateMachine stateMachine {  get; private set; }
@@ -52,9 +41,9 @@ public class Player : MonoBehaviour
     public PlayerPrimaryAttackState primaryAttackState { get; private set; }
 
     #endregion
-    private void Awake()
+    protected override void  Awake()
     {
-        
+        base.Awake();
         stateMachine = new PlayerStateMachine();
         idleState = new PlayerIdleState(this, stateMachine,"Idle");
         moveState = new PlayerMoveState(this, stateMachine, "Move");
@@ -66,14 +55,14 @@ public class Player : MonoBehaviour
     }
 
 
-    private void Start()
+    protected override void Start()
     {
-        anim = GetComponentInChildren<Animator>();
-        rb = GetComponent<Rigidbody2D>();
+        base.Start();
         stateMachine.Initialize(idleState);
     }
-    private void Update()
+    protected override void Update()
     {
+        base.Update();
         stateMachine.currentState.Update();
         CheckForDashInput();
     }
@@ -121,48 +110,5 @@ public class Player : MonoBehaviour
     }
 
 
-    /**
-     * 设置角色速度
-     */
-    public void SetVelocity(float _xVelocity,float _yVelocity)
-    {
-        rb.velocity = new Vector2(_xVelocity, _yVelocity);
-        FlipController(_xVelocity);
-    }
 
-    /*
-     * 判断是否位于地面上
-     */
-    public bool IsGroundDetected() => Physics2D.Raycast(groundCheck.position,Vector2.down,groundCheckDistance,whatIsGround);
-
-    public bool IsWallDetected() => Physics2D.Raycast(wallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
-
-    /**
-     * 画线判断距离地面的距离与墙壁的距离
-     */
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawLine(groundCheck.position, new Vector3(groundCheck.position.x,groundCheck.position.y-groundCheckDistance));
-        Gizmos.DrawLine(wallCheck.position, new Vector3(wallCheck.position.x + wallCheckDistance, wallCheck.position.y ));
-    }
-
-    /**
-     * 角色翻转
-     */
-    public void Flip()
-    {
-        facingDir = -facingDir;
-        facingRight = !facingRight;
-        transform.Rotate(0, 180, 0);
-    }
-
-    //当朝向与速度不同时翻转
-    public void FlipController(float x)
-    {
-        if(x > 0 && !facingRight ||
-            x <0 && facingRight) 
-        {
-            Flip();
-        }
-    }
 }

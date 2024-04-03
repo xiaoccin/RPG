@@ -19,10 +19,15 @@ public class MonsterState
         this.animBoolName = _animBoolName;
     }
 
+    public float GetStateTimer()
+    {
+        return stateTimer;
+    }
+
     public virtual void Enter()
     {
         this.rb = monster.rb;
-        monster.animator.SetBool(animBoolName, true);
+        monster.anim.SetBool(animBoolName, true);
         triggerCalled = false;
     }
 
@@ -36,6 +41,6 @@ public class MonsterState
 
     public virtual void Exit()
     {
-        monster.animator.SetBool(animBoolName, false);
+        monster.anim.SetBool(animBoolName, false);
     }
 }

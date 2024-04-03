@@ -7,13 +7,13 @@ public class Monster : Entity
     public MonsterStateMachine stateMachine { get; private set; }
     [SerializeField] protected LayerMask whatIsPlayer;
     [SerializeField] protected float playerCheckDistance;
-
+    
     protected override void Awake()
     {
         base.Awake();
         stateMachine = new MonsterStateMachine();
     }
-
+        
     protected override void Start()
     {
         base.Start();

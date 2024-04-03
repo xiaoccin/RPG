@@ -10,11 +10,19 @@ public class Monster_FlyEye : Monster
     public float moveTime = 2;
     public float idleTime = 1;
 
+    [Header("Battle Info")]
+    public float attackDistance = 1;
+    public float attackCooldownTime;
+    public float battleTime;
+
+    public float lastAttackTime;
+
     #region state
    
-    public FlyEyeIdleState idleState;
-    public FlyEyeMoveState moveState;
-    public FlyEyeBattleState battleState;
+    public FlyEyeIdleState idleState {  get;private set; }
+    public FlyEyeMoveState moveState { get; private set; }
+    public FlyEyeBattleState battleState { get; private set; }
+    public FlyEyeAttackState attackState { get; private set; }
     #endregion
 
 
@@ -24,6 +32,7 @@ public class Monster_FlyEye : Monster
         idleState = new FlyEyeIdleState(stateMachine, this, "Idle",this);
         moveState = new FlyEyeMoveState(stateMachine, this, "Move",this);
         battleState = new FlyEyeBattleState(stateMachine, this, "Move", this);
+        attackState = new FlyEyeAttackState(stateMachine, this, "Attack", this);
     }
 
     protected override void Start()
@@ -38,10 +47,12 @@ public class Monster_FlyEye : Monster
     {
 
         base.Update();
-        stateMachine.currectState.Update();
+        stateMachine.currentState.Update();
         /*Debug.Log(stateMachine.currectState.ToString());
         Debug.Log(stateMachine.currectState.GetStateTimer().ToString());*/
     }
 
-    
+    public void AnimationTragger() => stateMachine.currentState.AnimationFinishedTrigger();
+
+
 }

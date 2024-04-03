@@ -5,19 +5,19 @@ using UnityEngine.XR;
 
 public class MonsterStateMachine 
 {
-    public MonsterState currectState { private set; get; }
+    public MonsterState currentState { private set; get; }
 
     public void Initialize(MonsterState state)
     {
-        currectState = state;
-        currectState.Enter();
+        currentState = state;
+        currentState.Enter();
     }
 
 
     public void  ChangeState(MonsterState state)
     {
-        currectState.Exit();
-        currectState = state;
-        currectState.Enter();
+        currentState.Exit();
+        currentState = state;
+        currentState.Enter();
     }
 }

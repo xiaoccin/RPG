@@ -43,4 +43,9 @@ public class MonsterState
     {
         monster.anim.SetBool(animBoolName, false);
     }
+
+    public virtual void AnimationFinishedTrigger()
+    {
+        triggerCalled = true;
+    }
 }

@@ -15,6 +15,7 @@ public class FlyEyeBattleState : MonsterState
     public override void Enter()
     {
         base.Enter();
+        stateTimer = monster_FlyEye.battleTime;
         player = GameObject.Find("Player").transform;
         Debug.Log("enter battle");
     }
@@ -24,6 +25,23 @@ public class FlyEyeBattleState : MonsterState
         base.Update();
         if(player != null)
         {
+            if (monster_FlyEye.IsPlayerDetected())
+            {
+                if (monster_FlyEye.IsPlayerDetected().distance < monster_FlyEye.attackDistance && CanAttack())
+                {
+                    stateMachine.ChangeState(monster_FlyEye.attackState);
+                }
+            }
+            else
+            {
+                if (stateTimer < 0)
+                {
+                    stateMachine.ChangeState(monster_FlyEye.idleState);
+                }
+            }
+            
+
+
             if(player.position.x > monster.transform.position.x)
             {
                 moveDir = 1;
@@ -41,5 +59,13 @@ public class FlyEyeBattleState : MonsterState
         base.Exit();
     }
 
-    
+    public bool CanAttack()
+    {
+        if(monster_FlyEye.lastAttackTime + monster_FlyEye.attackCooldownTime < Time.time)
+        {
+            return true;
+        }
+        return false;
+    }
+
 }
